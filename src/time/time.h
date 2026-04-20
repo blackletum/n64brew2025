@@ -34,7 +34,8 @@ void update_render_time();
 
 void update_dispatch();
 
-#define DEFAULT_TIME_STEP   (1.0f / 30.0f)
+#define DEFAULT_TIME_STEP      (1.0f / 30.0f)
+#define DEFAULT_PAL_TIME_STEP  (1.0f / 25.0f)
 
 extern float fixed_time_step;
 extern float scaled_time_step;

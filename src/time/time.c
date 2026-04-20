@@ -3,6 +3,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <stdio.h>
+#include <libdragon.h>
 
 #include "../util/flags.h"
 #include "../util/blist.h"
@@ -41,7 +42,7 @@ int update_compare_elements(void* a, void* b) {
 void update_reset() {
     callback_list_reset(&g_update_state.callbacks, sizeof(struct update_element), MIN_UPDATE_COUNT, update_compare_elements);
     g_update_state.enabled_layers = ~0;
-    fixed_time_step = DEFAULT_TIME_STEP;
+    fixed_time_step = get_tv_type() == TV_PAL ? DEFAULT_PAL_TIME_STEP : DEFAULT_TIME_STEP;
 }
 
 void update_add(void* data, update_callback callback, int priority, int mask) {
