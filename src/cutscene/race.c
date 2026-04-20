@@ -12,6 +12,7 @@ static char g_completion_script[64];
 static int race_progress;
 static enum race_state current_state;
 static int laps_left = 0;
+static vector3_t next_checkpoint_position;
 
 static const char* completion_messages[] = {
     [RACE_STATE_NOT_STARTED] = "",
@@ -99,4 +100,8 @@ bool race_trigger_checkpoint(int index, bool is_finish) {
 
 enum race_state race_get_state() {
     return current_state;
+}
+
+void race_set_next_checkpoint(vector3_t* pos) {
+    next_checkpoint_position = *pos;
 }

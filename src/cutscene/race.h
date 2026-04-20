@@ -9,4 +9,6 @@ void race_trigger_end(enum race_state state);
 bool race_trigger_checkpoint(int index, bool is_finish);
 enum race_state race_get_state();
 
+void race_set_next_checkpoint(vector3_t* pos);
+
 #endif

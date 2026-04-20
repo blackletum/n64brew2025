@@ -319,6 +319,7 @@ struct checkpoint_definition {
     struct Vector2 rotation;
     enum checkpoint_type checkpoint_type;
     uint16_t checkpoint_index;
+    struct Vector3 next_checkpoint_position;
 };
 
 struct map_pickup_definition {

@@ -6,6 +6,7 @@
 #include "../time/time.h"
 #include "../audio/audio.h"
 #include "../cutscene/race.h"
+#include "../cutscene/cutscene_stopwatch.h"
 
 struct checkpoint_assets
 {
@@ -44,6 +45,7 @@ void checkpoint_update(void* data) {
     if (contacts_are_touching(checkpoint->trigger.active_contacts, ENTITY_ID_MOTORCYLE)) {
         if (race_trigger_checkpoint(checkpoint->checkpoint_index, checkpoint->is_finish)) {
             audio_play_2d(assets.checkpoint_sound, 1.0f, 0.0f, 1.0f, 1);
+            race_set_next_checkpoint(&checkpoint->next_checkpoint);
         }
     }
 }
@@ -60,6 +62,14 @@ void checkpoint_init(checkpoint_t* checkpoint, struct checkpoint_definition* def
 
     checkpoint->checkpoint_index = definition->checkpoint_index;
     checkpoint->is_finish = definition->checkpoint_type == CHECKPOINT_FINISH;
+    checkpoint->next_checkpoint = definition->next_checkpoint_position;
+
+    if (race_get_state() == RACE_STATE_STARTED && 
+        definition->checkpoint_type == CHECKPOINT_FINISH &&
+        cutscene_last_stopwatch_time() == 0.0f
+    ) {
+        race_set_next_checkpoint(&checkpoint->next_checkpoint);
+    }
 }
 
 void checkpoint_destroy(checkpoint_t* checkpoint, struct checkpoint_definition* definition) {
