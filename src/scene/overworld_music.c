@@ -10,7 +10,7 @@ static vector2_t settlement_loc = {
     179.4, 113.6,
 };
 
-#define SETTLEMENT_RADIUS   140.0f
+#define SETTLEMENT_RADIUS   162.0f
 
 static const char* music_filenames[OVERWORLD_SONG_COUNT] = {
     [OVERWORLD_SONG_AWAKENGING_TO_SILENCE] = "rom:/sounds/music/awakening_to_silence.wav64",
