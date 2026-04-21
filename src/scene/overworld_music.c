@@ -4,6 +4,7 @@
 #include "../cutscene/race.h"
 #include "../time/time.h"
 #include "../savefile/savefile.h"
+#include "../util/text.h"
 
 static vector2_t settlement_loc = {
     179.4, 113.6,
@@ -19,32 +20,49 @@ static const char* music_filenames[OVERWORLD_SONG_COUNT] = {
     [OVERWORLD_SONG_MEMORIES_INDOOR] = "rom:/sounds/music/memories_of_the_oldtimes_indoors.wav64",
     [OVERWORLD_SONG_MEMORIES_OUTDOOR] = "rom:/sounds/music/memories_of_the_oldtimes_outdoors.wav64",
     [OVERWORLD_SONG_INDOOR_AMBIENCE] = "rom:/sounds/music/science_lab_ambience.wav64",
+    [OVERWORLD_SONG_STORE_THEME] = "rom:/sounds/music/store_theme_radio.wav64",
+    [OVERWORLD_SONG_MAIN_MENU] = "rom:/sounds/music/menu_music.wav64",
+    [OVERWORLD_SONG_GARAGE] = "rom:/sounds/music/garage.wav64",
 };
 
-void overworld_music_init(overworld_music_t* music) {
+void overworld_music_init(overworld_music_t* music, const char* scene_filename) {
     for (int i = 0; i < OVERWORLD_SONG_COUNT; i += 1) {
         music->songs[i] = wav64_load(music_filenames[i], NULL);
     }
 
     music->is_racing = race_get_state() == RACE_STATE_STARTED;
     music->did_race_start = false;
+
+    music->single_scene_song = OVERWORLD_SONG_COUNT;
+    
+    if (str_startswith(scene_filename, "rom:/scenes/inside_house.scene")) {
+        music->single_scene_song = OVERWORLD_SONG_MEMORIES_INDOOR;
+    }
+
+    if (str_startswith(scene_filename, "rom:/scenes/inside_lab.scene")) {
+        music->single_scene_song = OVERWORLD_SONG_INDOOR_AMBIENCE;
+    }
+    
+    if (str_startswith(scene_filename, "rom:/scenes/inside_boat.scene")) {
+        music->single_scene_song = OVERWORLD_SONG_INDOOR_AMBIENCE;
+    }
+    
+    if (str_startswith(scene_filename, "rom:/scenes/store.scene")) {
+        music->single_scene_song = OVERWORLD_SONG_STORE_THEME;
+    }
+    
+    if (str_startswith(scene_filename, "rom:/scenes/garage.scene")) {
+        music->single_scene_song = OVERWORLD_SONG_GARAGE;
+    }
+    
+    if (str_startswith(scene_filename, "rom:/scenes/overworld.scene#main_menu")) {
+        music->single_scene_song = OVERWORLD_SONG_MAIN_MENU;
+    }
 }
 
-wav64_t* overworld_music_determine_song(overworld_music_t* music, vector3_t* player_pos, bool has_overworld) {
-    if (!has_overworld) {
-        if (strncmp(savefile_get_last_scene(), "rom:/scenes/inside_house.scene", strlen("rom:/scenes/inside_house.scene")) == 0) {
-            return music->songs[OVERWORLD_SONG_MEMORIES_INDOOR];
-        }
-
-        if (strncmp(savefile_get_last_scene(), "rom:/scenes/inside_lab.scene", strlen("rom:/scenes/inside_lab.scene")) == 0) {
-            return music->songs[OVERWORLD_SONG_INDOOR_AMBIENCE];
-        }
-        
-        if (strncmp(savefile_get_last_scene(), "rom:/scenes/inside_boat.scene", strlen("rom:/scenes/inside_boat.scene")) == 0) {
-            return music->songs[OVERWORLD_SONG_INDOOR_AMBIENCE];
-        }
-
-        return NULL;
+wav64_t* overworld_music_determine_song(overworld_music_t* music, vector3_t* player_pos) {
+    if (music->single_scene_song != OVERWORLD_SONG_COUNT) {
+        return music->songs[music->single_scene_song];
     }
 
     if (music->is_racing) {
@@ -75,8 +93,8 @@ wav64_t* overworld_music_determine_song(overworld_music_t* music, vector3_t* pla
     return music->songs[OVERWORLD_SONG_DESERT_STRING];
 }
 
-void overworld_music_update(overworld_music_t* music, vector3_t* player_pos, bool has_overworld) {
-    audio_play_music(overworld_music_determine_song(music, player_pos, has_overworld));
+void overworld_music_update(overworld_music_t* music, vector3_t* player_pos) {
+    audio_play_music(overworld_music_determine_song(music, player_pos));
 }
 
 void overworld_music_destroy(overworld_music_t* music) {

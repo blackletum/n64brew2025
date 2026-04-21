@@ -30,3 +30,20 @@ uint32_t utf8_decode(char **str)
     *str = (char*)s;
     return 0xFFFD;
 }
+
+bool str_startswith(const char* str, const char* prefix) {
+    while ((*str == *prefix)) {
+        ++str;
+        ++prefix;
+
+        if (!*prefix) {
+            return true;
+        }
+
+        if (!*str) {
+            return false;
+        }
+    }
+
+    return false;
+}

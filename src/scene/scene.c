@@ -258,7 +258,7 @@ void scene_update(void* data) {
 #endif
     }
 
-    overworld_music_update(&scene->music, player_get_position(&scene->player), scene->overworld != NULL);
+    overworld_music_update(&scene->music, player_get_position(&scene->player));
     SC_PROFILE_END(scene, scene_update);
 }
 
