@@ -8,5 +8,3 @@
 * in the lab where you get the nanites, some books are floating in the air
 * the framerate tanks in the starting village, i guess you should improve that because thats the starting area, lagging here could throw people off a bit
 * background music in the indoor areas wouldnt hurt either
-* the race start timing numbers 1,2,3 are not centered inside the blue rectangle
-* would be really helpful if the next checkpoint would be highlighted somehow, often you dont know which of the at the same time 3 visible checkpoints  is supposed to be next

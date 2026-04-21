@@ -68,7 +68,7 @@ void cutscene_stopwatch_render(void* data) {
                 .wrap = WRAP_NONE,
             }, 
             FONT_DIALOG, 
-            COUNTDOWN_X, COUNTDOWN_Y, 
+            COUNTDOWN_X + 1, COUNTDOWN_Y + 1, 
             time,
             len
         );
