@@ -7,12 +7,18 @@
 #include "../player/inventory.h"
 #include "expression_evaluate.h"
 #include "cutscene_stopwatch.h"
+#include "../render/render_scene.h"
+#include "../scene/scene.h"
+#include "../util/cleanup.h"
 
 static char g_completion_script[64];
 static int race_progress;
 static enum race_state current_state;
 static int laps_left = 0;
 static vector3_t next_checkpoint_position;
+static bool has_next_checkpoint;
+static tmesh_t next_checkpoint_arrow;
+static vector3_t relative_checkpoint_arrow_pos = {0.0f, 1.2f, -3.0f};
 
 static const char* completion_messages[] = {
     [RACE_STATE_NOT_STARTED] = "",
@@ -21,6 +27,32 @@ static const char* completion_messages[] = {
     [RACE_STATE_MISS_CHECKPOINT] = "Missed checkpoint",
     [RACE_STATE_ABANDON] = "Race abandoned",
 };
+
+void race_render_next_checkpoint(void* data, struct render_batch* batch) {
+    if (!has_next_checkpoint) {
+        return;
+    }
+
+    vector4_t pos_4;
+    matrixVec3Mul(batch->camera_matrix, &relative_checkpoint_arrow_pos, &pos_4);
+    
+    transform_sa_t transform;
+    transform.position = (vector3_t){pos_4.x, pos_4.y, pos_4.z};
+
+    vector3_t next_offset;
+    vector3Sub(&next_checkpoint_position, &transform.position, &next_offset);
+    vector2LookDir(&transform.rotation, &next_offset);
+
+    transform.scale = 1.0f;
+
+    T3DMat4FP* mtx = render_batch_transformfp_from_sa(batch, &transform);
+
+    if (!mtx) {
+        return;
+    }
+
+    render_batch_add_tmesh(batch, &next_checkpoint_arrow, mtx, NULL, NULL, NULL);
+}
 
 void race_setup_laps(void *data) {
     cutscene_stop_watch_set_lap_count(laps_left);
@@ -31,6 +63,8 @@ void race_start(const char* completion_script, int lap_count) {
     current_state = RACE_STATE_STARTED;
     laps_left = lap_count;
     strcpy(g_completion_script, completion_script);
+    render_scene_add(NULL, 0.0f, race_render_next_checkpoint, &next_checkpoint_position);
+    tmesh_load_filename(&next_checkpoint_arrow, "rom:/meshes/effects/next_checkpoint.tmesh");
 
     cutscene_builder_t cutscene;
     cutscene_builder_init(&cutscene);
@@ -53,9 +87,12 @@ void race_trigger_end(enum race_state state) {
     }
     
     cutscene_stopwatch_set_running(false);
-
+    render_scene_remove(&next_checkpoint_position);
+    cleanup_safe((cleanup_callback)tmesh_release, &next_checkpoint_arrow);
+    
     current_state = state;
     laps_left = 0;
+    has_next_checkpoint = false;
     cutscene_builder_t cutscene;
     cutscene_builder_init(&cutscene);
 
@@ -104,4 +141,5 @@ enum race_state race_get_state() {
 
 void race_set_next_checkpoint(vector3_t* pos) {
     next_checkpoint_position = *pos;
+    has_next_checkpoint = true;
 }
