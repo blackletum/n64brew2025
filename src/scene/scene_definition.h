@@ -23,6 +23,7 @@ enum entity_type_id {
     ENTITY_TYPE_sign,
     ENTITY_TYPE_checkpoint,
     ENTITY_TYPE_map_pickup,
+    ENTITY_TYPE_robot_whistle,
     // type enum insert point
     
     ENTITY_TYPE_count,
@@ -326,6 +327,10 @@ struct map_pickup_definition {
     struct Vector3 position;  
     struct Vector2 rotation;
     enum inventory_item_type map_type;
+};
+
+struct robot_whistle_definition {
+    struct Vector3 position;    
 };
 
 // definition insert point

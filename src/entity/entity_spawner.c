@@ -16,6 +16,7 @@
 #include "../entities/sign.h"
 #include "../entities/checkpoint.h"
 #include "../entities/map_pickup.h"
+#include "../entities/robot_whistle.h"
 // include_list insert point
 
 #define ENTITY_DEFINITION(name, fields) [ENTITY_TYPE_ ## name] = { \
@@ -65,6 +66,7 @@ static struct entity_definition scene_entity_definitions[ENTITY_TYPE_count] = {
     ENTITY_DEFINITION(sign, fields_sign_runner),
     ENTITY_DEFINITION(checkpoint, fields_empty),
     ENTITY_DEFINITION(map_pickup, fields_empty),
+    ENTITY_DEFINITION(robot_whistle, fields_empty),
     // scene_entity_definitions insert point
 };
 
