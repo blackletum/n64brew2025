@@ -105,6 +105,8 @@ COMBINE_MODE_TIME = 0.395
 BLEND_MODE_TIME = 0.751
 COLOR_CHANGE_TIME = 0.395
 CHANGE_MODE = 0.7
+# I made this number up
+OVERLAY_CHANGE_COST = 4.1
 
 def determine_material_cost(mat: material.Material) -> float:
     result = 0
@@ -137,6 +139,9 @@ def determine_material_cost(mat: material.Material) -> float:
         result += CHANGE_MODE
         if mat.fog.fog_color:
             result += COLOR_CHANGE_TIME
+
+    if result != 0:
+        result += OVERLAY_CHANGE_COST
 
     return result
 

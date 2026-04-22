@@ -30,7 +30,7 @@ struct overworld_music {
 typedef struct overworld_music overworld_music_t;
 
 void overworld_music_init(overworld_music_t* music, const char* scene_filename);
-void overworld_music_update(overworld_music_t* music, vector3_t* player_pos);
+void overworld_music_update(overworld_music_t* music, vector3_t* player_pos, bool is_overworld);
 void overworld_music_destroy(overworld_music_t* music);
 
 #endif

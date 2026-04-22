@@ -60,9 +60,13 @@ void overworld_music_init(overworld_music_t* music, const char* scene_filename) 
     }
 }
 
-wav64_t* overworld_music_determine_song(overworld_music_t* music, vector3_t* player_pos) {
-    if (music->single_scene_song != OVERWORLD_SONG_COUNT) {
-        return music->songs[music->single_scene_song];
+wav64_t* overworld_music_determine_song(overworld_music_t* music, vector3_t* player_pos, bool is_overworld) {
+    if (!is_overworld) {
+        if (music->single_scene_song != OVERWORLD_SONG_COUNT) {
+            return music->songs[music->single_scene_song];
+        }
+
+        return NULL;
     }
 
     if (music->is_racing) {
@@ -93,8 +97,8 @@ wav64_t* overworld_music_determine_song(overworld_music_t* music, vector3_t* pla
     return music->songs[OVERWORLD_SONG_DESERT_STRING];
 }
 
-void overworld_music_update(overworld_music_t* music, vector3_t* player_pos) {
-    audio_play_music(overworld_music_determine_song(music, player_pos));
+void overworld_music_update(overworld_music_t* music, vector3_t* player_pos, bool is_overworld) {
+    audio_play_music(overworld_music_determine_song(music, player_pos, is_overworld));
 }
 
 void overworld_music_destroy(overworld_music_t* music) {

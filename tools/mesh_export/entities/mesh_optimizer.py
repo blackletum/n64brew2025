@@ -86,7 +86,7 @@ def split_into_bone_pairs(mesh_data: mesh.mesh_data, mat: material.Material) -> 
 MATRIX_TIME = 4.134
 
 def determine_chunk_order(chunks: list[mesh_chunk], default_material: material.Material) -> list[mesh_chunk]:
-    current_material = default_material
+    current_material = default_material.copy()
     current_bones = None
 
     result = []
@@ -112,6 +112,7 @@ def determine_chunk_order(chunks: list[mesh_chunk], default_material: material.M
         while len(result) < target_length:
             next_chunk_index = None
             next_cost = 0
+            next_diff = None
 
             for idx, chunk in enumerate(chunk_layer):
                 if idx in used_chunks:
@@ -127,10 +128,14 @@ def determine_chunk_order(chunks: list[mesh_chunk], default_material: material.M
                 if next_chunk_index == None or cost_to_switch < next_cost:
                     next_chunk_index = idx
                     next_cost = cost_to_switch
+                    next_diff = diff
+
+            if not next_diff or next_chunk_index == None:
+                break
 
             next_chunk: mesh_chunk = chunk_layer[next_chunk_index]
             current_bones = next_chunk.used_bones
-            current_material = next_chunk.material
+            material_delta.apply_material_delta(next_diff, current_material)
             result.append(next_chunk)
             used_chunks.add(next_chunk_index)
 
