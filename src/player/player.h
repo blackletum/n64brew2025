@@ -61,6 +61,7 @@ struct player {
     wav64_t* sounds[PLAYER_SOUND_COUNT];
 
     struct Vector3 last_good_footing;
+    struct Vector3 last_footing_normal;
     float slide_timer;
     float coyote_time;
 

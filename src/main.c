@@ -76,8 +76,8 @@ void setup() {
 #if ENABLE_REWIND
     scene_queue_next("rom:/scenes/overworld.scene#test");
 #endif
-    // scene_queue_next("rom:/scenes/settlement_house1_inside.scene#default");
-    scene_queue_next("rom:/scenes/overworld.scene#race0");
+    // scene_queue_next("rom:/scenes/settlement_house2_inside.scene#default");
+    // scene_queue_next("rom:/scenes/overworld.scene#default");
     // scene_queue_next("rom:/repair/motorycle_engine.repair");
     // scene_queue_next("rom:/scenes/inside_boat.scene");
     // scene_queue_next("rom:/scenes/inside_house.scene#defualt");
