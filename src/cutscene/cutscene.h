@@ -53,6 +53,7 @@ enum cutscene_step_type {
     CUTSCENE_STEP_SET_EXPRESSION,
     CUTSCENE_STEP_MOVE_MOUTH,
     CUTSCENE_STEP_SHOW_IMAGE,
+    CUTSCENE_STEP_AUDIO_PLAY,
 };
 
 typedef void (*cutscene_step_callback)(void* data);
@@ -185,6 +186,9 @@ union cutscene_step_data {
     struct {
         char* filename;
     } show_image;
+    struct {
+        char* filename;
+    } audio_play;
 };
 
 struct cutscene_step {

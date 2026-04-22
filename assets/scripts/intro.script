@@ -2,13 +2,16 @@
 world_pause;
 fade FADE_COLOR_BLACK, 0;
 delay 3;
+audio_play "rom:/sounds/textbox/newgame_textbox_1.wav64";
 say "I can't let Samson die.";
 fade FADE_COLOR_NONE, 2.0;
 cam_animate "intro";
 delay 2.0;
 
+audio_play "rom:/sounds/textbox/newgame_textbox_2.wav64";
 say "He is all I have left.";
 fade FADE_COLOR_BLACK, 2;
 delay 2.0;
 world_unpause;
+audio_play "rom:/sounds/textbox/newgame_textbox_3.wav64";
 load_scene "rom:/scenes/garage.scene#default";

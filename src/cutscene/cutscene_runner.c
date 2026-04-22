@@ -426,6 +426,10 @@ void cutscene_runner_init_step(struct cutscene_active_entry* cutscene, struct cu
             }
             break;
         }
+        case CUTSCENE_STEP_AUDIO_PLAY: {
+            audio_play_2d(audio_load_one_shot(step->data.audio_play.filename), 1.0f, 0.0f, 1.0f, 1);
+            break;
+        }
     }
 }
 

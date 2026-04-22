@@ -4,6 +4,7 @@
 #include "../math/mathf.h"
 #include "../time/time.h"
 
+#define MAX_ONE_SHOT            4
 #define MAX_ACTIVE_SOUNDS       16
 #define SPEED_OF_SOUND          343
 #define FULL_VOLUME_DISTANCE    3.0f
@@ -35,6 +36,7 @@ struct audio_listener {
     struct Vector3 velocity;
 };
 
+static wav64_t* one_shot_sounds[MAX_ONE_SHOT];
 static audio_id active_sound_ids[MAX_ACTIVE_SOUNDS];
 static active_sound_t active_sounds[MAX_ACTIVE_SOUNDS];
 static audio_id next_id = MAX_ACTIVE_SOUNDS;
@@ -172,6 +174,18 @@ void audio_process_3d(active_sound_t* sound, int channel) {
     mixer_ch_set_freq(channel, final_freq);
 }
 
+wav64_t* audio_load_one_shot(const char* filename) {
+    for (int i = 0; i < MAX_ONE_SHOT; i += 1) {
+        if (!one_shot_sounds[i]) {
+            wav64_t* result = wav64_load(filename, NULL);
+            one_shot_sounds[i] = result;
+            return result;
+        }
+    }
+
+    return NULL;
+}
+
 audio_id audio_play_2d(wav64_t* wav, float volume, float pan, float pitch_shift, int16_t priority) {
     assert(wav->wave.channels == 1);
 
@@ -275,6 +289,29 @@ short audio_sample_reverb(short current_output, short input, short* prev_lowpass
     return (short)result;
 }
 
+void audio_player_check_one_shots() {
+    for (int i = 0; i < MAX_ONE_SHOT; i += 1) {
+        wav64_t* sound = one_shot_sounds[i];
+
+        if (sound) {
+            bool is_active = false;
+            for (int i = 0; i < MAX_ACTIVE_SOUNDS; i += 1) {
+                active_sound_t* active = &active_sounds[i];
+
+                if (active->wav == sound) {
+                    is_active = true;
+                    break;
+                }
+            }
+
+            if (!is_active) {
+                wav64_close(sound);
+                one_shot_sounds[i] = NULL;
+            }
+        }
+    }
+}
+
 void audio_player_update() {
     for (int i = 2; i < MAX_ACTIVE_SOUNDS; i += 1) {
         if (!active_sound_ids[i]) {
@@ -326,6 +363,8 @@ void audio_player_update() {
             }
         }
     }
+
+    audio_player_check_one_shots();
 }
 
 void audio_update_position(audio_id id, struct Vector3* pos, struct Vector3* vel) {

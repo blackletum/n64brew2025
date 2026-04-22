@@ -10,6 +10,8 @@ typedef uint16_t audio_id;
 void audio_player_init();
 void audio_player_update();
 
+wav64_t* audio_load_one_shot(const char* filename);
+
 audio_id audio_play_2d(wav64_t* wav, float volume, float pan, float pitch_shift, int16_t priority);
 audio_id audio_play_3d(wav64_t* wav, float volume, struct Vector3* pos, struct Vector3* vel, float pitch_shift, int16_t priority);
 bool audio_is_playing(audio_id id);

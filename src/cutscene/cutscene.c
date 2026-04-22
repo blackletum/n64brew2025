@@ -180,6 +180,9 @@ struct cutscene* cutscene_load(const char* filename) {
             case CUTSCENE_STEP_SHOW_IMAGE:
                 step->data.show_image.filename = string_load(file);
                 break;
+            case CUTSCENE_STEP_AUDIO_PLAY:
+                step->data.audio_play.filename = string_load(file);
+                break;
         }
     }
     
@@ -251,6 +254,9 @@ void cutscene_destroy(struct cutscene* cutscene) {
                 break;
             case CUTSCENE_STEP_SHOW_IMAGE:
                 free(step->data.show_image.filename);
+                break;
+            case CUTSCENE_STEP_AUDIO_PLAY:
+                free(step->data.audio_play.filename);
                 break;
             default:
                 break;

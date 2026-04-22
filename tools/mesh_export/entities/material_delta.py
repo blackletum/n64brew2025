@@ -87,6 +87,8 @@ def determine_material_delta(start: material.Material, end: material.Material) -
 
     return result
 
+COST_PER_BYTE = 0.0072
+
 def determine_texture_cost(tex: material.Tex | None) -> float:
     if not tex:
         return 0
@@ -94,9 +96,9 @@ def determine_texture_cost(tex: material.Tex | None) -> float:
     result = 2
 
     if tex.filename or tex.frames:
-        result += tex.byte_size() * 0.0072
+        result += tex.byte_size() * COST_PER_BYTE
     elif tex.palette_data:
-        result += len(tex.palette_data) * 2 * 0.0072
+        result += len(tex.palette_data) * 2 * COST_PER_BYTE
     
     return 0
 
@@ -106,7 +108,7 @@ BLEND_MODE_TIME = 0.751
 COLOR_CHANGE_TIME = 0.395
 CHANGE_MODE = 0.7
 # I made this number up
-OVERLAY_CHANGE_COST = 4.1
+OVERLAY_CHANGE_COST = 10.1
 
 def determine_material_cost(mat: material.Material) -> float:
     result = 0
