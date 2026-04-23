@@ -371,7 +371,7 @@ struct scene* scene_load(const char* filename) {
         cutscene_ref_run_then_destroy(&starting_cutscene, 0, scene_fade_in, NULL);
     }
 
-    overworld_music_init(&scene->music, filename);
+    overworld_music_init(&scene->music, filename, scene_get_next_entry());
     scene->pickup = wav64_load("rom:/sounds/parts/pickup.wav64", NULL);
 
     return scene;

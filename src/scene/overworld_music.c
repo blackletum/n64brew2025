@@ -25,7 +25,7 @@ static const char* music_filenames[OVERWORLD_SONG_COUNT] = {
     [OVERWORLD_SONG_GARAGE] = "rom:/sounds/music/garage.wav64",
 };
 
-void overworld_music_init(overworld_music_t* music, const char* scene_filename) {
+void overworld_music_init(overworld_music_t* music, const char* scene_filename, const char* entry_point) {
     for (int i = 0; i < OVERWORLD_SONG_COUNT; i += 1) {
         music->songs[i] = wav64_load(music_filenames[i], NULL);
     }
@@ -55,17 +55,17 @@ void overworld_music_init(overworld_music_t* music, const char* scene_filename) 
         music->single_scene_song = OVERWORLD_SONG_GARAGE;
     }
     
-    if (str_startswith(scene_filename, "rom:/scenes/overworld.scene#main_menu")) {
+    if (strcmp(scene_filename, "rom:/scenes/overworld.scene") == 0 && strcmp(entry_point, "main_menu") == 0) {
         music->single_scene_song = OVERWORLD_SONG_MAIN_MENU;
     }
 }
 
 wav64_t* overworld_music_determine_song(overworld_music_t* music, vector3_t* player_pos, bool is_overworld) {
-    if (!is_overworld) {
-        if (music->single_scene_song != OVERWORLD_SONG_COUNT) {
-            return music->songs[music->single_scene_song];
-        }
+    if (music->single_scene_song != OVERWORLD_SONG_COUNT) {
+        return music->songs[music->single_scene_song];
+    }
 
+    if (!is_overworld) {
         return NULL;
     }
 
