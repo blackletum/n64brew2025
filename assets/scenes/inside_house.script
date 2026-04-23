@@ -211,7 +211,11 @@ func on_robot_talk()
         if has_generator_part_0 and has_generator_part_1 and has_generator_part_2 then
             say "You have acquired the generator parts. Now go outside to repair the generator.";
         else
-            say "After you acquire the parts return here to fix the generator";
+            say "
+                After you acquire the parts return here to fix the generator.
+
+                You will find the parts north west from here.
+            ";
         end
         npc_animate scrapbot, "idle", true;
     elif not has_repaired_health_machine then
@@ -224,6 +228,8 @@ func on_robot_talk()
                 The surgeon bot has power now.
 
                 You need to follow that new map I gave to get more nanites.
+
+                Look south east from here.
             ";
         end
         npc_animate scrapbot, "idle", true;
@@ -235,6 +241,18 @@ func on_robot_talk()
             say "Now repair the broken tablet";
         elif has_tablet_note then
             say "You have the images in your inventory of the locations where you can find parts for the tablet.";
+
+            if not has_tablet_battery then
+                say "Look near the arches to the south east.";
+            end
+
+            if not has_tablet_screen then
+                say "Look for the part salesman in the city.";
+            end
+            
+            if not has_tablet_memory then
+                say "Look for a cave along the river.";
+            end
         else
             cam_look_npc repairs_tablet_broken;
             say "Look on the desk over there. I left some information where you can find parts for the tablet.";

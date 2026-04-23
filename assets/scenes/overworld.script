@@ -74,7 +74,11 @@ func well_scrapbot()
         return;
     elif not has_pump_gear then
         npc_animate water_pump_scrapbot, "bot_talk", true;
-        say "Consult the map I already gave you to acquire the parts.";
+        say "
+            Consult the map I already gave you to acquire the parts.
+
+            You will find them south west from here.    
+        ";
     elif not has_repaired_pump then 
         npc_animate water_pump_scrapbot, "bot_talk", true;
         say "You have procured the parts";
