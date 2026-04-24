@@ -17,12 +17,12 @@ static const char* music_filenames[OVERWORLD_SONG_COUNT] = {
     [OVERWORLD_SONG_DESERT_DAYDREAMS] = "rom:/sounds/music/desert_daydreams.wav64",
     [OVERWORLD_SONG_DESERT_STRING] = "rom:/sounds/music/desert_strings.wav64",
     [OVERWORLD_SONG_RACE] = "rom:/sounds/music/race.wav64",
-    [OVERWORLD_SONG_MEMORIES_INDOOR] = "rom:/sounds/music/memories_of_the_oldtimes_indoors.wav64",
     [OVERWORLD_SONG_MEMORIES_OUTDOOR] = "rom:/sounds/music/memories_of_the_oldtimes_outdoors.wav64",
     [OVERWORLD_SONG_INDOOR_AMBIENCE] = "rom:/sounds/music/science_lab_ambience.wav64",
     [OVERWORLD_SONG_STORE_THEME] = "rom:/sounds/music/store_theme_radio.wav64",
     [OVERWORLD_SONG_MAIN_MENU] = "rom:/sounds/music/menu_music.wav64",
     [OVERWORLD_SONG_GARAGE] = "rom:/sounds/music/garage.wav64",
+    [OVERWORLD_SONG_SANDSHACK] = "rom:/sounds/music/sandshack.wav64",
 };
 
 void overworld_music_init(overworld_music_t* music, const char* scene_filename, const char* entry_point) {
@@ -36,7 +36,7 @@ void overworld_music_init(overworld_music_t* music, const char* scene_filename, 
     music->single_scene_song = OVERWORLD_SONG_COUNT;
     
     if (str_startswith(scene_filename, "rom:/scenes/inside_house.scene")) {
-        music->single_scene_song = OVERWORLD_SONG_MEMORIES_INDOOR;
+        music->single_scene_song = OVERWORLD_SONG_MAIN_MENU;
     }
 
     if (str_startswith(scene_filename, "rom:/scenes/inside_lab.scene")) {
@@ -57,6 +57,10 @@ void overworld_music_init(overworld_music_t* music, const char* scene_filename, 
     
     if (strcmp(scene_filename, "rom:/scenes/overworld.scene") == 0 && strcmp(entry_point, "main_menu") == 0) {
         music->single_scene_song = OVERWORLD_SONG_MAIN_MENU;
+    }
+    
+    if (str_startswith(scene_filename, "rom:/scenes/settlement_house")) {
+        music->single_scene_song = OVERWORLD_SONG_SANDSHACK;
     }
 }
 

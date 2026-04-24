@@ -14,6 +14,7 @@ enum repair_scene_sounds {
     REPAIR_SOUND_PICKUP,
     REPAIR_SOUND_HOVER,
     REPAIR_SOUND_CLICK,
+    REPAIR_SOUND_COMPLETE,
     REPAIR_SOUND_COUNT,
 };
 

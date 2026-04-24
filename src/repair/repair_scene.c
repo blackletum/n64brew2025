@@ -308,6 +308,7 @@ void repair_scene_update(void* data) {
     if (!scene->is_complete && is_complete) {
         scene->is_complete = is_complete;
         cutscene_timer_cancel();
+        audio_play_2d(scene->assets.sounds[REPAIR_SOUND_COMPLETE], 1.0f, 0.0f, 1.0f, 1);
         repair_scene_exit_with_message(scene, "Repair complete");
         expression_set_bool(scene->puzzle_complete, true);
         return;
@@ -328,6 +329,7 @@ static const char* sound_filesnames[] = {
     [REPAIR_SOUND_PICKUP] = "rom:/sounds/repair/pickup.wav64",
     [REPAIR_SOUND_HOVER] = "rom:/sounds/repair/hover.wav64",
     [REPAIR_SOUND_CLICK] = "rom:/sounds/repair/click.wav64",
+    [REPAIR_SOUND_COMPLETE] = "rom:/sounds/repair/complete.wav64",
 };
 
 repair_scene_t* repair_scene_load(const char* filename) {
