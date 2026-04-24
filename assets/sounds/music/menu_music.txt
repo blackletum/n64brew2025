@@ -1,0 +1,1 @@
+--wav-compress 1 --wav-resample 22050 --wav-loop true
