@@ -26,6 +26,9 @@
 #define UPGRADED_BOOST_SPEED    60.0f
 #define MAX_TURN_RATE           2.0f
 
+#define MAX_SLOPE_CLIMB         0.7f
+#define MAX_FAST_SLOPE_CLIMB    0.8f
+
 #define DRIFT_SPEED_REDUNCTION  3.0f
 #define MIN_DRIFT_TURN_RATE     1.3f
 #define MAX_DRIFT_TURN_RATE     2.6f
@@ -586,14 +589,35 @@ void motorcycle_update(void* data) {
             }
         }
 
+        if (is_grounded && ground_normal.y > 0.0f) {
+            if (vector3Dot(vel, &ground_normal) < 0.0f) {
+                vector3ProjectPlane(vel, &ground_normal, vel);
+            }
+
+            float horz_dot = target_vel.x * ground_normal.x + target_vel.z * ground_normal.z;
+
+            if (horz_dot < 0.0f) {
+                if (ground_normal.y < MAX_FAST_SLOPE_CLIMB) {
+                    vector3_t side;
+                    vector3Cross(&target_vel, &ground_normal, &side);
+                    vector3_t back;
+                    vector3Cross(&side, &ground_normal, &back);
+
+                    vector3_t projected_vel;
+                    vector3ProjectPlane(&target_vel, &back, &projected_vel);
+                    float lerp = (ground_normal.y - MAX_SLOPE_CLIMB) * (1.0f / (MAX_FAST_SLOPE_CLIMB - MAX_SLOPE_CLIMB));
+
+                    if (lerp <= 0.0f) {
+                        target_vel = projected_vel;
+                    } else {
+                        vector3Lerp(&projected_vel, &target_vel, lerp, &target_vel);
+                    }
+                }
+            }
+        }
         
         if (is_grounded) {
             target_vel.y += spring_accel * fixed_time_step;
-            // vector3AddScaled(&target_vel, &normal_velocity, vector3Dot(&ground_normal, &motorcycle->collider.velocity) > 0.0f ? 0.99f : 0.5f, &target_vel);
-            // if (are_brakes_on) {
-            // } else {
-            //     vector3AddScaled(&target_vel, &ground_normal, spring_accel * fixed_time_step, &target_vel);
-            // }
         } else {
             vector3Scale(&target_vel, &target_vel, 0.99f);
             vector3Add(&target_vel, &normal_velocity, &target_vel);
@@ -605,6 +629,8 @@ void motorcycle_update(void* data) {
         vector3Scale(vel, vel, 0.99f);
     }
 
+    motorcycle->vehicle.is_grounded = is_grounded;
+    motorcycle->vehicle.ground_normal_y = ground_normal.y;
     motorcycle->was_grounded = is_grounded;
     motorcycle->was_stopped = target_speed == 0.0f && motorcycle->has_traction;
 }

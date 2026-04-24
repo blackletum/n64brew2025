@@ -49,6 +49,8 @@ struct vehicle {
     bool is_stopped: 1;
     bool is_boosting: 1;
     bool hit_boost_pad: 1;
+    bool is_grounded: 1;
+    float ground_normal_y;
 };
 
 typedef struct vehicle vehicle_t;

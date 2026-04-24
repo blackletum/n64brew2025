@@ -261,7 +261,7 @@ bool player_handle_ground_movement(struct player* player, struct contact* ground
         return false;
     }
     
-    bool is_good_footing = ground_contact->other_object == 0 && ground_contact->surface_type != SURFACE_TYPE_COYOTE;
+    bool is_good_footing = ground_contact->other_object == 0 && ground_contact->surface_type == SURFACE_TYPE_DEFAULT;
     vector3_t* vel = &player->cutscene_actor.collider.velocity;
     vector3_t* pos = &player->cutscene_actor.transform.position;
 
@@ -518,7 +518,7 @@ void player_update_in_vehicle(struct player* player, struct contact* ground_cont
 
     joypad_buttons_t pressed = joypad_get_buttons_pressed(0);
 
-    if (pressed.b && vehicle->is_stopped) {
+    if (pressed.b && vehicle->is_stopped && vehicle->is_grounded && vehicle->ground_normal_y > (1.0f - MAX_STABLE_SLOPE)) {
         player_exit_vehicle(player);
         inventory_set_has_item(ITEM_RIDING_MOTORCYCLE, false);
         inventory_set_has_item(ITEM_HAS_DISMOUNTED, true);
