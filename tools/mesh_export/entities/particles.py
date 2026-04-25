@@ -274,13 +274,13 @@ def build_particles(obj: bpy.types.Object, base_transform: mathutils.Matrix) -> 
         if next_vertex:
             posB = transform_particle(full_transform @ next_vertex.co, mid_point, scale_inv, center_offset)
         else:
-            posB = mathutils.Vector()
+            posB = posA
 
         size_a = vertex.groups[size.index].weight if size else 1
 
         particle_data.write(pack_pos(posA, size_a))
 
-        size_b = next_vertex.groups[size.index].weight if next_vertex and size else 1
+        size_b = next_vertex.groups[size.index].weight if next_vertex and size else size_a
 
         particle_data.write(pack_pos(posB, size_b))
 
@@ -291,8 +291,11 @@ def build_particles(obj: bpy.types.Object, base_transform: mathutils.Matrix) -> 
                 '>BBBB', 
                 255, 255, 255, 0 if has_texture else 255
             ))
-        if has_b and color and color.domain == 'POINT':
-            particle_data.write(extract_color(index + 1, color, alpha, has_texture))
+        if color and color.domain == 'POINT':
+            if has_b:
+                particle_data.write(extract_color(index + 1, color, alpha, has_texture))
+            else:
+                particle_data.write(extract_color(index, color, alpha, has_texture))
         else:
             particle_data.write(struct.pack(
                 '>BBBB', 
