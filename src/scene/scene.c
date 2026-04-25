@@ -11,6 +11,7 @@
 #include "../time/time.h"
 #include "../config.h"
 #include "../profile/profile.h"
+#include "../render/defs.h"
 
 struct scene* current_scene;
 
@@ -68,7 +69,7 @@ void scene_render_room(struct scene* scene, int room_index, struct render_batch*
             }
     
             transform.position = instance->center;
-            transform.scale = instance->size;
+            vector3Scale(&instance->size, &transform.scale, 1.0f / STATIC_WORLD_SCALE);
     
             T3DMat4FP* mtx = render_batch_transformfp_from_full(batch, &transform);
     
