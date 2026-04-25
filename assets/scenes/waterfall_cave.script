@@ -2,6 +2,12 @@
 func waterfall_cave_msg()
     sign_start;
     cam_look_npc ENTITY_ID_SUBJECT;
-    say "Good job finding this place! ...Uh. I don't really have any treasure to give you. You can keep any nuts you find around here though.";
+    say "
+        Good job finding this place!
+        
+        ...Uh. I don't really have any treasure to give you. 
+        
+        You can keep any nuts you find around here though.
+    ";
     sign_end;
 end

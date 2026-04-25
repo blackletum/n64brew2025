@@ -260,6 +260,10 @@ void material_load(struct material* into, FILE* material_file) {
                     if ((blendMode & SOM_Z_WRITE) == 0) {
                         into->sort_priority = SORT_PRIORITY_TRANSPARENT;
                     }
+
+                    if (!(blendMode & SOM_Z_COMPARE)) {
+                        into->sort_priority = SORT_PRIORITY_NO_DEPTH_TEST;
+                    }
                 }
                 break;
             case COMMAND_ENV:

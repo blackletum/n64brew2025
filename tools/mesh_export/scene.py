@@ -220,26 +220,12 @@ def write_particles(scene: Scene, base_transform: mathutils.Matrix, room_collect
         room_to_particle[room_index].append(built)
         count = count + 1
 
-    particle_data = io.BytesIO()
+    all_particles: list[entities.particles.Particles] = []
 
     for room_index in range(len(room_collection.rooms)):
-        particles = room_to_particle[room_index]
+        all_particles += room_to_particle[room_index]
 
-        for built in particles:
-            particle_data.write(built.particles)
-
-    particle_data_bytes = particle_data.getvalue()
-
-    file.write(struct.pack('>IH', len(particle_data_bytes), count))
-    file.write(particle_data_bytes)
-
-    for room_index in range(len(room_collection.rooms)):
-        particles = room_to_particle[room_index]
-
-        particles = entities.particles.batch_particles(particles)
-
-        for built in particles:
-            built.write_into(file)
+    entities.particles.write_particles(all_particles, file)
 
     offset = 0
 
