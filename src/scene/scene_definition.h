@@ -329,8 +329,16 @@ struct map_pickup_definition {
     enum inventory_item_type map_type;
 };
 
+enum robot_whistle_sound {
+    ROBOT_WHISTLE_ROBOT,
+    ROBOT_WHISTLE_WATERFALL,
+};
+
 struct robot_whistle_definition {
-    struct Vector3 position;    
+    struct Vector3 position;
+    enum robot_whistle_sound sound;
+    float volume;
+    bool disable_doppler;
 };
 
 // definition insert point

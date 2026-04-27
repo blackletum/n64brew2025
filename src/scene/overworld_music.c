@@ -23,6 +23,7 @@ static const char* music_filenames[OVERWORLD_SONG_COUNT] = {
     [OVERWORLD_SONG_MAIN_MENU] = "rom:/sounds/music/menu_music.wav64",
     [OVERWORLD_SONG_GARAGE] = "rom:/sounds/music/garage.wav64",
     [OVERWORLD_SONG_SANDSHACK] = "rom:/sounds/music/sandshack.wav64",
+    [OVERWORLD_SONG_WATERFALL_CAVE] = "rom:/sounds/music/waterfall_cave.wav64",
 };
 
 void overworld_music_init(overworld_music_t* music, const char* scene_filename, const char* entry_point) {
@@ -61,6 +62,10 @@ void overworld_music_init(overworld_music_t* music, const char* scene_filename, 
     
     if (str_startswith(scene_filename, "rom:/scenes/settlement_house")) {
         music->single_scene_song = OVERWORLD_SONG_SANDSHACK;
+    }
+    
+    if (str_startswith(scene_filename, "rom:/scenes/waterfall_cave.scene")) {
+        music->single_scene_song = OVERWORLD_SONG_WATERFALL_CAVE;
     }
 }
 

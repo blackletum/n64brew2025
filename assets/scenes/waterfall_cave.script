@@ -8,6 +8,11 @@ func waterfall_cave_msg()
         ...Uh. I don't really have any treasure to give you. 
         
         You can keep any nuts you find around here though.
+
+        If you are looking for a memory module.
+
+        Try a different cave.
     ";
+
     sign_end;
 end

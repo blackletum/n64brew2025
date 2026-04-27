@@ -21,6 +21,7 @@ struct active_sound {
     wav64_t* wav;
     bool is_3d;
     bool is_paused;
+    bool use_doppler;
     int16_t priority;
     float volume;
     float frequency;
@@ -154,6 +155,11 @@ void audio_process_3d(active_sound_t* sound, int channel) {
 
     audio_set_pan_volume(channel, volume, pan);
 
+    if (!sound->use_doppler) {
+        mixer_ch_set_freq(channel, sound->frequency);
+        return;
+    }
+
     float sound_direction = vector3Dot(&sound->velocity, &offset);
     float listener_direction = vector3Dot(&listener.velocity, &offset);
 
@@ -201,6 +207,7 @@ audio_id audio_play_2d(wav64_t* wav, float volume, float pan, float pitch_shift,
     active_sound_t* sound = &active_sounds[channel];
     sound->priority = priority;
     sound->is_3d = false;
+    sound->use_doppler = false;
     sound->is_paused = false;
     sound->wav = wav;
     sound->frequency = pitch_shift;
@@ -227,6 +234,7 @@ audio_id audio_play_3d(wav64_t* wav, float volume, struct Vector3* pos, struct V
     active_sound_t* sound = &active_sounds[channel];
     sound->priority = priority;
     sound->is_3d = true;
+    sound->use_doppler = true;
     sound->is_paused = false;
     sound->wav = wav;
     sound->position = *pos;
@@ -367,21 +375,25 @@ void audio_player_update() {
     audio_player_check_one_shots();
 }
 
-void audio_update_position(audio_id id, struct Vector3* pos, struct Vector3* vel) {
+active_sound_t* audio_lookup_struct(audio_id id) {
     if (!id) {
-        return;
+        return NULL;
     }
 
     int channel = audio_channel_from_id(id);
 
     if (active_sound_ids[channel] != id) {
-        return;
+        return NULL;
     }
 
     
-    active_sound_t* sound = &active_sounds[channel];
+    return &active_sounds[channel];
+}
 
-    if (!sound->is_3d) {
+void audio_update_position(audio_id id, struct Vector3* pos, struct Vector3* vel) {
+    active_sound_t* sound = audio_lookup_struct(id);
+
+    if (!sound || !sound->is_3d) {
         return;
     }
 
@@ -391,20 +403,9 @@ void audio_update_position(audio_id id, struct Vector3* pos, struct Vector3* vel
 
 
 void audio_update_volume(audio_id id, float volume) {
-    if (!id) {
-        return;
-    }
+    active_sound_t* sound = audio_lookup_struct(id);
 
-    int channel = audio_channel_from_id(id);
-
-    if (active_sound_ids[channel] != id) {
-        return;
-    }
-
-    
-    active_sound_t* sound = &active_sounds[channel];
-
-    if (!sound->is_3d) {
+    if (!sound || !sound->is_3d) {
         return;
     }
 
@@ -412,24 +413,23 @@ void audio_update_volume(audio_id id, float volume) {
 }
 
 void audio_update_pitch(audio_id id, float pitch) {
-    if (!id) {
-        return;
-    }
+    active_sound_t* sound = audio_lookup_struct(id);
 
-    int channel = audio_channel_from_id(id);
-
-    if (active_sound_ids[channel] != id) {
-        return;
-    }
-
-    
-    active_sound_t* sound = &active_sounds[channel];
-
-    if (!sound->is_3d) {
+    if (!sound || !sound->is_3d) {
         return;
     }
 
     sound->frequency = pitch * sound->wav->wave.frequency;
+}
+
+void audio_disable_doppler(audio_id id) {
+    active_sound_t* sound = audio_lookup_struct(id);
+
+    if (!sound || !sound->is_3d) {
+        return;
+    }
+
+    sound->use_doppler = false;
 }
 
 void audio_update_listener(struct Vector3* pos, struct Vector3* right) {

@@ -61,6 +61,12 @@
             "type": "sign"
         },
         {
+            "name": "objects_sound_source",
+            "description": "",
+            "mesh": "meshes/objects/sound_source.blend#sound_source",
+            "type": "robot_whistle"
+        },
+        {
             "name": "objects_text_poster",
             "description": "",
             "mesh": "meshes/objects/text_poster.blend#text_poster",
