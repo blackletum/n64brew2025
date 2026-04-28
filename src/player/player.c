@@ -52,7 +52,7 @@ static struct Vector2 player_max_rotation;
 static struct Vector2 z_target_rotation;
 
 static struct spatial_trigger_type player_vision_shape = {
-    SPATIAL_TRIGGER_WEDGE(15.0f, 7.0f, 0.707f, 0.707f),
+    SPATIAL_TRIGGER_WEDGE(15.0f, 10.0f, 0.707f, 0.707f),
 };
 
 struct climb_up_data {
