@@ -26,6 +26,7 @@ struct overworld_music {
     bool is_racing;
     bool did_race_start;
     enum overworld_songs single_scene_song;
+    float volume;
 };
 
 typedef struct overworld_music overworld_music_t;

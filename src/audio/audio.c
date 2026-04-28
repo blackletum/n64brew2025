@@ -47,6 +47,7 @@ static struct audio_listener listener = {
 };
 
 static wav64_t* target_music = NULL;
+static float music_volume = 1.0f;
 
 static inline int audio_channel_from_id(audio_id id) {
     return id & (MAX_ACTIVE_SOUNDS - 1);
@@ -265,8 +266,9 @@ void audio_stop(audio_id id) {
     active_sounds[channel].wav = NULL;
 }
 
-void audio_play_music(wav64_t* wav) {
+void audio_play_music(wav64_t* wav, float volume) {
     target_music = wav;
+    music_volume = volume;
 }
 
 struct audio_sample {
@@ -352,7 +354,7 @@ void audio_player_update() {
             active_sounds[0].volume = mathfMoveTowards(active_sounds[0].volume, 0.0f, 0.5f * fixed_time_step);
 
             if (active_sounds[0].volume > 0) {
-                mixer_ch_set_vol(0, active_sounds[0].volume, active_sounds[0].volume);
+                mixer_ch_set_vol(0, active_sounds[0].volume * music_volume, active_sounds[0].volume * music_volume);
             } else {
                 mixer_ch_stop(0);
                 active_sounds[0].wav = NULL;
@@ -367,7 +369,7 @@ void audio_player_update() {
 
             if (target_music) {
                 mixer_ch_play(0, &target_music->wave);
-                mixer_ch_set_vol(0, 1, 1);
+                mixer_ch_set_vol(0, music_volume, music_volume);
             }
         }
     }

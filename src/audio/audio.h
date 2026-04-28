@@ -18,7 +18,7 @@ bool audio_is_playing(audio_id id);
 
 void audio_stop(audio_id id);
 
-void audio_play_music(wav64_t* wav);
+void audio_play_music(wav64_t* wav, float volume);
 
 void audio_cancel(wav64_t* wav);
 void audio_update_position(audio_id id, struct Vector3* pos, struct Vector3* vel);
