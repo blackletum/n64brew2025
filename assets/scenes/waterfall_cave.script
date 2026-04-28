@@ -9,9 +9,7 @@ func waterfall_cave_msg()
         
         You can keep any nuts you find around here though.
 
-        If you are looking for a memory module.
-
-        Try a different cave.
+        If you are looking for a memory module, try a different cave.
     ";
 
     sign_end;

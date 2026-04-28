@@ -740,3 +740,12 @@ func trader_scrapbot_talk()
     cam_return;
     world_unpause;
 end
+
+func river_ledge_msg()
+    sign_start;
+    cam_look_npc ENTITY_ID_SUBJECT;
+    say "
+        Whoa, you came all the way here? Way to explore!
+    ";
+    sign_end;
+end
