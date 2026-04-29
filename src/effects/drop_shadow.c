@@ -44,6 +44,9 @@ void drop_shadow_render(void* data, struct render_batch* batch) {
     mtx[2][1] = -skew_scale.z;
     matrixApplyScaledPos(mtx, &pos, WORLD_SCALE);
     render_batch_relative_mtx(batch, mtx);
+    if (render_should_cull(mtx)) {
+        return;
+    }
     t3d_mat4_to_fixed_3x4(mtxfp, (T3DMat4*)mtx);
 
     render_batch_add_tmesh(batch, drop_shadow->mesh, mtxfp, NULL, NULL, NULL);

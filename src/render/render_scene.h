@@ -45,4 +45,6 @@ void render_scene_remove_step(void* data);
 
 void render_scene_render(struct Camera* camera, T3DViewport* viewport, struct frame_memory_pool* pool);
 
+bool render_should_cull(mat4x4 mtx);
+
 #endif

@@ -16,6 +16,14 @@ void render_scene_reset() {
     callback_list_reset(&r_scene_3d.step_callbacks, sizeof(struct render_scene_step), MIN_RENDER_SCENE_SIZE, NULL);
 }
 
+#define CULL_RADIUS 32766.0f
+
+bool render_should_cull(mat4x4 mtx) {
+    return mtx[3][0] >= CULL_RADIUS || mtx[3][0] <= -CULL_RADIUS ||
+        mtx[3][1] >= CULL_RADIUS || mtx[3][1] <= -CULL_RADIUS ||
+        mtx[3][2] >= CULL_RADIUS || mtx[3][2] <= -CULL_RADIUS;
+}
+
 void render_scene_add(struct Vector3* center, float radius, render_scene_callback callback, void* data) {
     struct render_scene_element element;
 
@@ -42,6 +50,9 @@ void render_scene_render_renderable(void* data, struct render_batch* batch) {
     mat4x4 mtx;
     transformToWorldMatrix(renderable->transform.transform, mtx);
     render_batch_relative_mtx(batch, mtx);
+    if (render_should_cull(mtx)) {
+        return;
+    }
     t3d_mat4_to_fixed_3x4(mtxfp, (T3DMat4*)mtx);
 
     struct render_batch_element* element = render_batch_add_tmesh(
@@ -87,6 +98,9 @@ void render_scene_render_renderable_single_axis(void* data, struct render_batch*
 #endif
 
     render_batch_relative_mtx(batch, mtx);
+    if (render_should_cull(mtx)) {
+        return;
+    }
     t3d_mat4_to_fixed_3x4(mtxfp, (T3DMat4*)mtx);
 
     struct render_batch_element* element = render_batch_add_tmesh(
@@ -121,6 +135,9 @@ void render_scene_render_point(void* data, struct render_batch* batch) {
     vector3Scale(renderable->transform.transform, &scaled, WORLD_SCALE);
     matrixFromPosition(mtx, &scaled);
     render_batch_relative_mtx(batch, mtx);
+    if (render_should_cull(mtx)) {
+        return;
+    }
     t3d_mat4_to_fixed_3x4(mtxfp, (T3DMat4*)mtx);
     
     if (renderable->point_render.current_stall_frame == 0) {

@@ -4,6 +4,7 @@
 #include "../time/time.h"
 #include "../math/mathf.h"
 #include "../particles/static_particles.h"
+#include "render_scene.h"
 #include "defs.h"
 
 void render_batch_init(struct render_batch* batch, struct Transform* camera_transform, struct frame_memory_pool* pool) {
@@ -290,6 +291,9 @@ T3DMat4FP* render_batch_transformfp_from_sa(struct render_batch* batch, struct T
     mat4x4 mtx;
     transformSAToMatrix(transform, mtx);
     render_batch_relative_mtx(batch, mtx);
+    if (render_should_cull(mtx)) {
+        return NULL;
+    }
     t3d_mat4_to_fixed_3x4(mtxfp, (T3DMat4*)mtx);
 
     return mtxfp;
@@ -305,6 +309,9 @@ T3DMat4FP* render_batch_transformfp_from_full(struct render_batch* batch, struct
     mat4x4 mtx;
     transformToWorldMatrix(transform, mtx);
     render_batch_relative_mtx(batch, mtx);
+    if (render_should_cull(mtx)) {
+        return NULL;
+    }
     t3d_mat4_to_fixed_3x4(mtxfp, (T3DMat4*)mtx);
 
     return mtxfp;

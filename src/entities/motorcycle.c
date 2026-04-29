@@ -275,6 +275,9 @@ void motorcycle_render(void* data, render_batch_t* batch) {
     mat4x4 mtx;
     transformSAToMatrix(&rotated_transform, mtx);
     render_batch_relative_mtx(batch, mtx);
+    if (render_should_cull(mtx)) {
+        return;
+    }
     t3d_mat4_to_fixed_3x4(mtxfp, (T3DMat4*)mtx);
 
     struct render_batch_element* element = render_batch_add_tmesh(
