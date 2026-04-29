@@ -147,6 +147,14 @@ global canyon_house_nut_2: bool;
 global canyon_house_nut_3: bool;
 global canyon_house_nut_4: bool;
 
+global waterfall_cave_nut_0: bool;
+global waterfall_cave_nut_1: bool;
+global waterfall_cave_nut_2: bool;
+global waterfall_cave_nut_3: bool;
+global waterfall_cave_nut_4: bool;
+global waterfall_cave_nut_5: bool;
+global waterfall_cave_nut_6: bool;
+
 global has_race1_reward: bool;
 global has_race2_reward: bool;
 global has_race3_reward: bool;
