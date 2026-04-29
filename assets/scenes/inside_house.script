@@ -306,7 +306,7 @@ func on_samson_heal()
     say "
         Thank you, Jax.
 
-        I wasn't sure if I was going to make it
+        I wasn't sure if I was going to make it...
     ";
 
     npc_animate characters_brother_healed, "depressed", true;
