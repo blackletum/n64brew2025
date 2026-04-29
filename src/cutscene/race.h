@@ -8,6 +8,7 @@ void race_start(const char* completion_script, int lap_count);
 void race_trigger_end(enum race_state state);
 bool race_trigger_checkpoint(int index, bool is_finish);
 enum race_state race_get_state();
+bool race_has_next_checkpoint();
 
 void race_set_next_checkpoint(vector3_t* pos);
 

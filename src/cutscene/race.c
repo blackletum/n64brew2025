@@ -62,6 +62,7 @@ void race_start(const char* completion_script, int lap_count) {
     race_progress = 0;
     current_state = RACE_STATE_STARTED;
     laps_left = lap_count;
+    has_next_checkpoint = false;
     strcpy(g_completion_script, completion_script);
     render_scene_add(NULL, 0.0f, race_render_next_checkpoint, &next_checkpoint_position);
     tmesh_load_filename(&next_checkpoint_arrow, "rom:/meshes/effects/next_checkpoint.tmesh");
@@ -142,4 +143,8 @@ enum race_state race_get_state() {
 void race_set_next_checkpoint(vector3_t* pos) {
     next_checkpoint_position = *pos;
     has_next_checkpoint = true;
+}
+
+bool race_has_next_checkpoint() {
+    return has_next_checkpoint;
 }

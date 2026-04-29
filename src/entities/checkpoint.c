@@ -66,7 +66,7 @@ void checkpoint_init(checkpoint_t* checkpoint, struct checkpoint_definition* def
 
     if (race_get_state() == RACE_STATE_STARTED && 
         definition->checkpoint_type == CHECKPOINT_FINISH &&
-        cutscene_last_stopwatch_time() == 0.0f
+        !race_has_next_checkpoint()
     ) {
         race_set_next_checkpoint(&checkpoint->next_checkpoint);
     }
