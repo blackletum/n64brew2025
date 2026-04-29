@@ -245,6 +245,16 @@ void player_exit_vehicle(struct player* player) {
     }
 }
 
+void player_fall(struct player* player) {
+    player->state = PLAYER_FALLING;
+    player_run_clip(player, PLAYER_ANIMATION_FALLING);
+}
+
+void player_slide(struct player* player) {
+    player->state = PLAYER_SLIDING;
+    player_run_clip(player, PLAYER_ANIMATION_SLIDE);
+}
+
 bool player_handle_ground_movement(struct player* player, struct contact* ground_contact, struct Vector3* target_direction, float* speed) {
     contact_t fake_contact = {
         .normal = gUp,
@@ -275,8 +285,7 @@ bool player_handle_ground_movement(struct player* player, struct contact* ground
             vector3ProjectPlane(&offset, &player->last_footing_normal, &offset);
             vector3Add(&player->last_good_footing, &offset, pos);
         } else {
-            player->state = PLAYER_SLIDING;
-            player_run_clip(player, PLAYER_ANIMATION_SLIDE);
+            player_slide(player);
             return false;
         }
         is_good_footing = false;
@@ -534,7 +543,9 @@ void player_update_in_vehicle(struct player* player, struct contact* ground_cont
 }
 
 void player_update_sliding(struct player* player, struct contact* ground_contact) {
-    if (dynamic_object_should_slide(MAX_STABLE_SLOPE, ground_contact->normal.y, ground_contact->surface_type)) {   
+    if (!ground_contact) {
+        player_fall(player);
+    } else if (dynamic_object_should_slide(MAX_STABLE_SLOPE, ground_contact->normal.y, ground_contact->surface_type)) {   
         vector3_t slide_direction = ground_contact->normal;
         
         struct Vector3 target_direction;
@@ -566,6 +577,18 @@ void player_update_sliding(struct player* player, struct contact* ground_contact
     }
 }
 
+void player_update_falling(struct player* player, struct contact* ground_contact) {
+    if (ground_contact) {
+        if (dynamic_object_should_slide(MAX_STABLE_SLOPE, ground_contact->normal.y, ground_contact->surface_type)) {
+            player_slide(player);
+        } else {
+            player->state = PLAYER_GROUNDED;
+            player->last_good_footing = player->cutscene_actor.transform.position;
+            player->last_footing_normal = ground_contact->normal;
+        }
+    }
+}
+
 void player_update_state(struct player* player, struct contact* ground_contact) {
     switch (player->state) {
          case PLAYER_GROUNDED:
@@ -576,6 +599,9 @@ void player_update_state(struct player* player, struct contact* ground_contact) 
             break;
         case PLAYER_SLIDING:
             player_update_sliding(player, ground_contact);
+            break;
+        case PLAYER_FALLING:
+            player_update_falling(player, ground_contact);
             break;
         default:
             break;
@@ -631,6 +657,7 @@ static const char* animation_clip_names[PLAYER_ANIMATION_COUNT] = {
     [PLAYER_ANIMATION_RUN] = "run",
     [PLAYER_ANIMATION_RIDE_BIKE] = "ride_bike",
     [PLAYER_ANIMATION_SLIDE] = "slide",
+    [PLAYER_ANIMATION_FALLING] = "falling",
 };
 
 static const char* sound_names[PLAYER_SOUND_COUNT] = {};
