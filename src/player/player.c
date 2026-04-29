@@ -33,6 +33,8 @@
 #define PLAYER_RUN_THRESHOLD 1.4f
 #define PLAYER_RUN_ANIM_SPEED   4.2f
 #define PLAYER_WALK_ANIM_SPEED   0.64f
+#define PLAYER_SLIDE_SPEED          2.0f
+#define PLAYER_SLIDE_ACCEL_SPEED    7.0f
 
 #define SLIDE_DELAY 0.25f
 #define COYOTE_TIME 0.1f
@@ -266,11 +268,17 @@ bool player_handle_ground_movement(struct player* player, struct contact* ground
     vector3_t* pos = &player->cutscene_actor.transform.position;
 
     if (dynamic_object_should_slide(MAX_STABLE_SLOPE, ground_contact->normal.y, ground_contact->surface_type)) {
-        vector3_t offset;
-        vector3Sub(pos, &player->last_good_footing, &offset);
-        vector3ProjectPlane(vel, &player->last_footing_normal, vel);
-        vector3ProjectPlane(&offset, &player->last_footing_normal, &offset);
-        vector3Add(&player->last_good_footing, &offset, pos);
+        if (vel->x * ground_contact->normal.x + vel->z * ground_contact->normal.z < 0.0f) {
+            vector3_t offset;
+            vector3Sub(pos, &player->last_good_footing, &offset);
+            vector3ProjectPlane(vel, &player->last_footing_normal, vel);
+            vector3ProjectPlane(&offset, &player->last_footing_normal, &offset);
+            vector3Add(&player->last_good_footing, &offset, pos);
+        } else {
+            player->state = PLAYER_SLIDING;
+            player_run_clip(player, PLAYER_ANIMATION_SLIDE);
+            return false;
+        }
         is_good_footing = false;
     } else {
         player->slide_timer = 0.0f;
@@ -525,6 +533,39 @@ void player_update_in_vehicle(struct player* player, struct contact* ground_cont
     }
 }
 
+void player_update_sliding(struct player* player, struct contact* ground_contact) {
+    if (dynamic_object_should_slide(MAX_STABLE_SLOPE, ground_contact->normal.y, ground_contact->surface_type)) {   
+        vector3_t slide_direction = ground_contact->normal;
+        
+        struct Vector3 target_direction;
+        player_get_input_direction(player, &target_direction);
+        vector3AddScaled(&slide_direction, &target_direction, ground_contact->normal.y * 0.75f, &slide_direction);
+        
+        slide_direction.y = 0.0f;
+
+        vector2_t target_rotation;
+
+        transform_sa_t* transform = &player->cutscene_actor.transform;
+
+        vector2LookDir(&target_rotation, &slide_direction);
+
+        if (vector2Dot(&target_rotation, &transform->rotation) < 0) {
+            vector2Negate(&target_rotation, &target_rotation);
+        }
+
+        vector2RotateTowards(&transform->rotation, &target_rotation, &player_max_rotation, &transform->rotation);
+
+        vector3_t target_vel;
+        vector3ProjectPlane(&slide_direction, &ground_contact->normal, &target_vel);
+        vector3Normalize(&target_vel, &target_vel);
+        vector3Scale(&target_vel, &target_vel, PLAYER_SLIDE_SPEED);
+        vector3_t* vel = &player->cutscene_actor.collider.velocity;
+        vector3MoveTowards(vel, &target_vel, PLAYER_SLIDE_ACCEL_SPEED * fixed_time_step, vel);
+    } else {
+        player->state = PLAYER_GROUNDED;
+    }
+}
+
 void player_update_state(struct player* player, struct contact* ground_contact) {
     switch (player->state) {
          case PLAYER_GROUNDED:
@@ -532,6 +573,9 @@ void player_update_state(struct player* player, struct contact* ground_contact) 
             break;
         case PLAYER_IN_VEHICLE:
             player_update_in_vehicle(player, ground_contact);
+            break;
+        case PLAYER_SLIDING:
+            player_update_sliding(player, ground_contact);
             break;
         default:
             break;
@@ -586,6 +630,7 @@ static const char* animation_clip_names[PLAYER_ANIMATION_COUNT] = {
     [PLAYER_ANIMATION_WALK] = "walk",
     [PLAYER_ANIMATION_RUN] = "run",
     [PLAYER_ANIMATION_RIDE_BIKE] = "ride_bike",
+    [PLAYER_ANIMATION_SLIDE] = "slide",
 };
 
 static const char* sound_names[PLAYER_SOUND_COUNT] = {};

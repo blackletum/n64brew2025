@@ -22,6 +22,7 @@
 enum player_state {
     PLAYER_GROUNDED,
     PLAYER_IN_VEHICLE,
+    PLAYER_SLIDING,
 };
 
 enum player_animation {
@@ -29,6 +30,7 @@ enum player_animation {
     PLAYER_ANIMATION_WALK,
     PLAYER_ANIMATION_RUN,
     PLAYER_ANIMATION_RIDE_BIKE,
+    PLAYER_ANIMATION_SLIDE,
     PLAYER_ANIMATION_COUNT,
 };
 
