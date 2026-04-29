@@ -118,15 +118,15 @@ class _mesh_pending_data():
     
     def has_more(self):
         return self.triangle_count > 0
-    
+
 class _sorted_mesh():
-    def __init__(self, data: mesh.mesh_data, direction: mathutils.Vector | None):
+    def __init__(self, data: mesh.mesh_data, direction: mathutils.Vector):
         self.data = data
         self.current_triangle = 0
 
         triangle_indicies = range(0, len(data.indices), 3)
-        vertex_distances = list(map(lambda x: direction @ x, data.vertices))
-        triangle_distances = map(lambda x: min(vertex_distances[x: x+3]), triangle_indicies)
+        vertex_distances = list[float](map(lambda x: direction @ x, data.vertices))
+        triangle_distances = map(lambda x: sum([vertex_distances[y] for y in triangle_vertices(data, x)]) / 3, triangle_indicies)
         zipped_distances = zip(triangle_indicies, triangle_distances)
         sorted_triangles = sorted(zipped_distances, key=lambda x: x[1])
         self.triangle_indices = list(map(lambda x: x[0], sorted_triangles))
