@@ -92,7 +92,7 @@ func on_brother_talk()
         say "
             Things are going to be okay.
 
-            Thank you jax.
+            Thank you, Jax.
         ";
         set_expression characters_brother_healed, NPC_EXPRESSION_NEUTRAL;
     elif has_tablet_repaired_tablet and not has_given_tablet then
@@ -123,9 +123,9 @@ func on_brother_talk()
         say "
             I remember now. They wouldn't want me to lose hope like this.
 
-            We can make it Jax. I know we can if we stick together.
+            We can make it, Jax. I know we can if we stick together.
 
-            Thank you jax.
+            Thank you, Jax.
         ";
         move_mouth characters_brother_healed, 0.0;
 
@@ -304,7 +304,7 @@ func on_samson_heal()
     delay 0.5;
 
     say "
-        Thank you Jax.
+        Thank you, Jax.
 
         I wasn't sure if I was going to make it
     ";
@@ -314,7 +314,7 @@ func on_samson_heal()
 
     set_expression ENTITY_ID_PLAYER, NPC_EXPRESSION_SAD;
     say "
-        but maybe we are just delaying the inevitable.
+        ...but maybe we are just delaying the inevitable.
 
         It has been so hard since mom and dad died. I don't think I remember what their faces look like anymore.
 
@@ -333,7 +333,7 @@ func on_samson_heal()
     npc_wait scrapbot;
 
     npc_animate scrapbot, "bot_talk", true;
-    say "You saved his life but it appears his spirit is still broken";
+    say "You saved his life, but it appears his spirit is still broken.";
     npc_animate scrapbot, "idle", true;
     
     interact_with_npc INTERACTION_LOOK, ENTITY_ID_PLAYER, repairs_tablet_broken;
@@ -342,9 +342,9 @@ func on_samson_heal()
 
     npc_animate scrapbot, "bot_talk", true;
     say "
-        I finished searching potential locations where you may find parts to repair your old tablet
+        I finished searching potential locations where you may find parts to repair your old tablet.
 
-        Perhaps it will have something from life before the impact to cheer Samson up
+        Perhaps it will have something from life before the impact to cheer Samson up.
     ";
     npc_animate scrapbot, "idle", true;
 

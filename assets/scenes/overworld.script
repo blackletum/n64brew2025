@@ -43,7 +43,7 @@ func well_scrapbot()
     if not has_well_part_map then
         npc_animate water_pump_scrapbot, "bot_talk", true;
         say "
-            Hello Jax. I have a task for you.
+            Hello, Jax. I have a task for you.
 
             Acquire clean water to tend to Samson's wounds.
         ";
@@ -110,7 +110,7 @@ func exit_repair_well()
 
         npc_animate water_pump_scrapbot, "bot_talk", true;
         say "
-            Your attention please
+            Your attention please.
             
             Please come speak to me. I have a map for you.
         ";
