@@ -4,6 +4,8 @@
 #include "../resource/sprite_cache.h"
 #include "../render/defs.h"
 #include "../time/time.h"
+#include "../config.h"
+#include "../util/rspq.h"
 
 void material_init(struct material* material) {
     material->block = 0;
@@ -395,6 +397,7 @@ void material_load(struct material* into, FILE* material_file) {
 void material_load_file(struct material* into, const char* filename) {
     FILE* material_file = asset_fopen(filename, NULL);
     material_load(into, material_file);
+    material_debug(into, filename);
     fclose(material_file);
 }
 
@@ -433,4 +436,13 @@ void material_apply(struct material* material) {
 
     material_check_texture_scroll(TILE0, &material->tex0);
     material_check_texture_scroll(TILE1, &material->tex1);
+}
+
+void material_debug(struct material* material, const char* name) {
+#if DEBUG_MATERIALS
+    uint32_t overlay;
+    debugf("checking mat %s ", name);
+    uint32_t switch_count = rspq_count_overlay_switches(material->block, &overlay);
+    debugf( " switch %d overlay %x\n", switch_count, overlay);
+#endif
 }
