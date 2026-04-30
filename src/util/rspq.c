@@ -102,6 +102,25 @@ static uint8_t command_size[] = {
     [0xFF] = 8, // RDPQCmd_SetColorImage SET_COLOR_IMAGE
 };
 
+static uint8_t overlay_mapping[16] = {
+    [0x0] = 0x0,
+    [0x1] = 0x1,
+    [0x2] = 0x2,
+    [0x3] = 0x3,
+    [0x4] = 0x4,
+    [0x5] = 0x5,
+    [0x6] = 0x6,
+    [0x7] = 0x7,
+    [0x8] = 0x8,
+    [0x9] = 0x9,
+    [0xA] = 0xA,
+    [0xB] = 0xB,
+    [0xC] = 0xC,
+    [0xD] = 0xC,
+    [0xE] = 0xC,
+    [0xF] = 0xC,
+};
+
 #define MAX_DISPLAY_LIST_SIZE       1000
 
 uint32_t rspq_count_overlay_switches_cmd(uint32_t* cmd, uint32_t* ending_overlay) {
@@ -130,7 +149,7 @@ uint32_t rspq_count_overlay_switches_cmd(uint32_t* cmd, uint32_t* ending_overlay
             assert(cmd_size);
             cmd += cmd_size >> 2;
 
-            uint32_t overlay_id = command_id >> 4;
+            uint32_t overlay_id = overlay_mapping[command_id >> 4];
 
             if (*ending_overlay != overlay_id) {
                 result += 1;
