@@ -107,9 +107,9 @@ void render_3d(surface_t* col, surface_t* z_buffer) {
     rdpq_set_z_image(z_buffer);
     if ((current_scene && !current_scene->overworld) || ENABLE_LOD_RENDER_DEBUG) {
         t3d_screen_clear_color(RGBA32(0, 0, 0, 0));
-    } else {
+    } /*else {
         t3d_screen_clear_color(RGBA32(0xc0, 0xf8, 0xf8, 0));
-    }
+    }*/
     
     t3d_frame_start();
 
