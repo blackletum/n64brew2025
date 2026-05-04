@@ -5,7 +5,7 @@ say "
 
     The hover bike accelerates with A and slows down with B.
 
-    You get off by pressed B while stopped.
+    You get off by pressing B while stopped.
 ";
 
 sign_end;
