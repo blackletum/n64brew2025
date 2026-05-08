@@ -29,6 +29,7 @@
 #include "render/defs.h"
 #include "debug/rewind.h"
 #include "profile/profile.h"
+#include "intro/logo.h"
 
 #include <libdragon.h>
 #include <n64sys.h>
@@ -210,21 +211,21 @@ void step_simulation() {
 
 int main(void)
 {
-	resolution_t custom_res = {SCREEN_WD, SCREEN_HT, false};
-
-	if (get_tv_type() == 0) //TEMP: if PAL, adjust vertical res
-	{
-		custom_res.height = 288;
-	}
-
-    display_init(custom_res, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
-    // display_set_fps_limit(30.0f);
-	// *(volatile uint32_t*)0xA4400000 |= 0x300; //disables resampling on the VI
 	rdpq_init();
     t3d_init((T3DInitParams){});
     tpx_init((TPXInitParams){});
     dfs_init(DFS_DEFAULT_LOCATION);
     joypad_init();
+    audio_player_init();
+
+    logo_libdragon();
+    logo_t3d();
+
+	resolution_t custom_res = {SCREEN_WD, SCREEN_HT, false};
+
+    display_init(custom_res, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
+    // display_set_fps_limit(30.0f);
+	// *(volatile uint32_t*)0xA4400000 |= 0x300; //disables resampling on the VI
 
     surface_t zbuffer = surface_alloc(FMT_RGBA16, custom_res.width, custom_res.height);
 

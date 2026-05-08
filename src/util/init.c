@@ -23,7 +23,6 @@ void init_engine() {
     menu_reset();
     cutscene_runner_init();
     cutscene_actor_reset();
-    audio_player_init();
     menu_common_init();
     map_menu_init();
 }

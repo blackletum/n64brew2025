@@ -34,6 +34,8 @@ void update_render_time();
 
 void update_dispatch();
 
+void update_set_fixed_time_step(float step);
+
 #define DEFAULT_TIME_STEP      (1.0f / 30.0f)
 #define DEFAULT_PAL_TIME_STEP  (1.0f / 25.0f)
 
@@ -43,6 +45,5 @@ extern float scaled_time_step_inv;
 extern float total_time;
 extern float game_time;
 extern float global_time_scale;
-extern float render_time_step;
 
 #endif

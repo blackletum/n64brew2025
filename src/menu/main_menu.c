@@ -140,6 +140,14 @@ void main_menu_update(void *data) {
         }
     }
 
+    if (inputs.btn.l && inputs.btn.z && get_tv_type() == TV_PAL) {
+        vi_set_timing_preset(&VI_TIMING_PAL60);
+        update_set_fixed_time_step(DEFAULT_TIME_STEP);
+    } else if (inputs.btn.r && inputs.btn.z && get_tv_type() == TV_PAL) {
+        vi_set_timing_preset(&VI_TIMING_PAL);
+        update_set_fixed_time_step(DEFAULT_PAL_TIME_STEP);
+    }
+
     prev_y = inputs.stick_y;
 
     joypad_buttons_t pressed = joypad_get_buttons_pressed(0);

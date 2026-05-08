@@ -30,7 +30,6 @@ float scaled_time_step_inv;
 float total_time;
 float game_time;
 float global_time_scale = 1.0f;
-float render_time_step;
 float last_render_time = 0.0f;
 
 int update_compare_elements(void* a, void* b) {
@@ -87,7 +86,6 @@ bool update_has_layer(int mask) {
 }
 
 void update_render_time() {
-    render_time_step = game_time - last_render_time;
     last_render_time = game_time;
 }
 
@@ -142,4 +140,8 @@ void update_dispatch() {
 #endif
 
     callback_list_end(&g_update_state.callbacks);
+}
+
+void update_set_fixed_time_step(float step) {
+    fixed_time_step = step;
 }
